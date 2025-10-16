@@ -1,0 +1,211 @@
+/* ==================== VARIABLES & RESET ==================== */
+:root {
+    --primary-color: #007BFF;
+    --secondary-color: #f8f9fa;
+    --text-color: #333;
+    --heading-color: #111;
+    --white-color: #fff;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 40px;
+    color: var(--heading-color);
+}
+
+/* ==================== HEADER ==================== */
+.header {
+    background-color: var(--white-color);
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.header__nav-link {
+    margin-left: 25px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+/* ==================== HERO SECTION ==================== */
+.hero {
+    padding: 80px 0;
+    background-color: var(--secondary-color);
+}
+
+.hero__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+}
+
+.hero__content {
+    flex: 1;
+}
+
+.hero__title {
+    font-size: 3rem;
+    color: var(--heading-color);
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.hero__description {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.hero__image-wrapper {
+    flex: 0 0 40%;
+    display: flex;
+    justify-content: center;
+    align-items: l;
+}
+
+.hero__image {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+}
+
+/* ==================== BUTTON (CTA) ==================== */
+.button {
+    padding: 15px 30px;
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button--primary {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+/* ==================== FEATURES SECTION ==================== */
+.features {
+    padding: 80px 0;
+}
+
+.features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.feature-card {
+    background-color: var(--white-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+}
+
+.feature-card__title {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+/* ==================== USAGE EXAMPLE SECTION ==================== */
+.usage {
+    padding: 80px 0;
+    background-color: var(--secondary-color);
+}
+
+.usage__example {
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: #2d3748;
+    color: var(--white-color);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    font-family: monospace;
+}
+
+.usage__prompt {
+    margin-bottom: 20px;
+}
+
+.usage__response {
+    background-color: #4a5568;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--primary-color);
+}
+
+/* ==================== FOOTER ==================== */
+.footer {
+    padding: 30px 0;
+    background-color: #333;
+    color: var(--white-color);
+    text-align: center;
+}
+
+/* ==================== RESPONSIVE (BREAKPOINT) ==================== */
+@media (max-width: 768px) {
+    .hero__container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .hero__image-wrapper {
+        margin-top: 40px;
+    }
+
+    .hero__title {
+        font-size: 2.5rem;
+    }
+
+    .features__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+}
