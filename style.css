@@ -5,6 +5,7 @@
     --text-color: #333;
     --heading-color: #111;
     --white-color: #fff;
+    --focus-color: #0056b3; /* ADDED FOR ACCESSIBILITY */
     --border-radius: 8px;
     --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
@@ -13,6 +14,10 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -32,6 +37,14 @@ body {
     font-size: 2.2rem;
     margin-bottom: 40px;
     color: var(--heading-color);
+}
+
+/* --- ADDED FOR ACCESSIBILITY & UX --- */
+/* Provides a clear visual indicator for keyboard navigators */
+:focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 /* ==================== HEADER ==================== */
@@ -97,13 +110,35 @@ body {
     flex: 0 0 40%;
     display: flex;
     justify-content: center;
-    align-items: l;
+    align-items: center;
 }
 
 .hero__image {
     width: 100%;
     max-width: 350px;
     height: auto;
+}
+
+.hero__search-form {
+    display: flex;
+    gap: 10px;
+}
+
+.hero__search-input {
+    flex-grow: 1;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.search-result {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e9f4ff;
+    border-left: 4px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    display: none; /* Initially hidden */
 }
 
 /* ==================== BUTTON (CTA) ==================== */
@@ -151,54 +186,105 @@ body {
     margin-bottom: 15px;
 }
 
-/* ==================== USAGE EXAMPLE SECTION ==================== */
-.usage {
+/* ==================== CONTACT FORM SECTION ==================== */
+.contact {
     padding: 80px 0;
     background-color: var(--secondary-color);
 }
 
-.usage__example {
-    max-width: 700px;
-    margin: 0 auto;
-    background-color: #2d3748;
-    color: var(--white-color);
-    padding: 30px;
-    border-radius: var(--border-radius);
-    font-family: monospace;
-}
-
-.usage__prompt {
-    margin-bottom: 20px;
-}
-
-.usage__response {
-    background-color: #4a5568;
-    padding: 20px;
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--primary-color);
-}
-
-/* ==================== FOOTER ==================== */
-.footer {
-    padding: 30px 0;
-    background-color: #333;
-    color: var(--white-color);
+.contact__subtitle {
     text-align: center;
+    max-width: 500px;
+    margin: -20px auto 40px;
 }
 
-/* ==================== RESPONSIVE (BREAKPOINT) ==================== */
+.contact__form {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contact__form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.contact__label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.contact__input {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+}
+
+.contact__button {
+    align-self: center;
+}
+
+/* ==================== NEW: FORM VALIDATION STYLES ==================== */
+
+/* Kiểu cho ô input khi bị lỗi */
+.contact__input--invalid {
+    border-color: #e74c3c; /* Màu đỏ cho viền */
+    background-color: #fff8f8; /* Nền hồng nhạt */
+}
+
+/* Kiểu cho thông báo lỗi bên dưới ô input */
+.contact__error-message {
+    color: #e74c3c;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 5px;
+    min-height: 1.2em; /* Giữ không gian để layout không bị "nhảy" */
+}
+
+/* Kiểu cho thông báo trạng thái chung (thành công/lỗi) */
+#form-status-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius);
+    text-align: center;
+    font-weight: 500;
+    display: none; /* Ẩn đi lúc đầu */
+}
+
+#form-status-message.status--success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block; /* Hiện ra khi thành công */
+}
+
+#form-status-message.status--error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block; /* Hiện ra khi có lỗi */
+}
+
+/* ==================== RESPONSIVE (BREAKPOINT < 768px) ==================== */
 @media (max-width: 768px) {
     .hero__container {
-        flex-direction: column;
+        flex-direction: column-reverse; /* Image on top */
         text-align: center;
     }
 
     .hero__image-wrapper {
-        margin-top: 40px;
+        margin-bottom: 40px;
     }
 
     .hero__title {
-        font-size: 2.5rem;
+        font-size: 2.5rem; /* ADDED FOR RESPONSIVENESS */
+    }
+
+    .hero__search-form {
+        flex-direction: column;
     }
 
     .features__grid {
@@ -206,6 +292,6 @@ body {
     }
 
     .section-title {
-        font-size: 1.8rem;
+        font-size: 1.8rem; /* ADDED FOR RESPONSIVENESS */
     }
 }

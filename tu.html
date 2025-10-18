@@ -17,7 +17,7 @@
             <a href="#" class="header__logo">UniFAQ 💡</a>
             <nav class="header__nav">
                 <a href="#features" class="header__nav-link">Tính năng</a>
-                <a href="#usage" class="header__nav-link">Cách dùng</a>
+                <a href="#contact" class="header__nav-link">Liên hệ</a>
             </nav>
         </div>
     </header>
@@ -26,11 +26,15 @@
         <section class="hero">
             <div class="container hero__container">
                 <div class="hero__content">
-                    <h1 class="hero__title">Không còn phải chờ đợi câu trả lời</h1>
+                    <h1 class="hero__title">Mọi câu trả lời, ngay trong tầm tay</h1>
                     <p class="hero__description">
-                        Nhận ngay lời giải đáp chính xác cho các câu hỏi về trường đại học của bạn. Từ học phí, lịch thi đến các câu lạc bộ - UniFAQ biết tất cả.
+                        Nhập câu hỏi của bạn về trường đại học và để AI của chúng tôi tìm câu trả lời chính xác nhất.
                     </p>
-                    <button class="button button--primary">Dùng thử miễn phí</button>
+                    <form class="hero__search-form" id="search-form">
+                        <input type="text" id="search-input" class="hero__search-input" placeholder="Ví dụ: Hạn chót đóng học phí?">
+                        <button type="submit" class="button button--primary">Hỏi ngay</button>
+                    </form>
+                    <div id="search-result" class="search-result"></div>
                 </div>
                 <div class="hero__image-wrapper">
                     <svg class="hero__image" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +48,7 @@
             <div class="container">
                 <h2 class="section-title">Tại sao nên chọn UniFAQ?</h2>
                 <div class="features__grid">
-                    <div class="feature-card">
+                     <div class="feature-card">
                         <h3 class="feature-card__title">🚀 Tức thì</h3>
                         <p class="feature-card__description">Không cần chờ email phản hồi từ phòng công tác sinh viên. Nhận câu trả lời trong vài giây.</p>
                     </div>
@@ -60,16 +64,29 @@
             </div>
         </section>
 
-        <section id="usage" class="usage">
+        <section id="contact" class="contact">
             <div class="container">
-                <h2 class="section-title">Sử dụng đơn giản</h2>
-                <div class="usage__example">
-                    <p class="usage__prompt"><strong>Bạn hỏi:</strong> "Khi nào là hạn chót đóng học phí học kỳ 2?"</p>
-                    <div class="usage__response">
-                        <p><strong>UniFAQ trả lời:</strong></p>
-                        <p>Chào bạn, theo thông báo từ phòng Kế hoạch - Tài chính, hạn chót đóng học phí cho Học kỳ 2 năm học 2025-2026 là <strong>17:00 ngày 28/02/2026</strong>. Bạn có thể thanh toán qua cổng thanh toán trực tuyến của trường hoặc tại văn phòng.</p>
+                <h2 class="section-title">Nhận thông tin cập nhật</h2>
+                <p class="contact__subtitle">Đăng ký để nhận thông báo khi UniFAQ ra mắt phiên bản chính thức!</p>
+                
+                <form class="contact__form" id="contact-form" novalidate>
+                    
+                    <div id="form-status-message"></div>
+
+                    <div class="contact__form-group">
+                        <label for="name" class="contact__label">Tên của bạn</label>
+                        <input type="text" id="name" class="contact__input" required>
+                        <span class="contact__error-message" id="name-error"></span>
                     </div>
-                </div>
+                    
+                    <div class="contact__form-group">
+                        <label for="email" class="contact__label">Email</label>
+                        <input type="email" id="email" class="contact__input" required>
+                        <span class="contact__error-message" id="email-error"></span>
+                    </div>
+                    
+                    <button type="submit" class="button button--primary contact__button">Đăng ký ngay</button>
+                </form>
             </div>
         </section>
     </main>
@@ -79,6 +96,8 @@
             <p>&copy; 2025 UniFAQ. Một sản phẩm dành cho sinh viên.</p>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
