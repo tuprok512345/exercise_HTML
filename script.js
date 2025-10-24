@@ -1,104 +1,138 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- SEARCH FORM LOGIC (GIỮ NGUYÊN) ---
+    // --- SEARCH FORM LOGIC ---
     const searchForm = document.getElementById('search-form');
     const searchInput = document.getElementById('search-input');
     const searchResult = document.getElementById('search-result');
 
-    searchForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Ngăn form gửi đi theo cách truyền thống
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = searchInput.value.toLowerCase().trim();
+            let response = '';
 
-        const query = searchInput.value.toLowerCase().trim();
-        let response = '';
+            if (query === '') {
+                response = '🤔 Vui lòng nhập câu hỏi của bạn vào ô tìm kiếm.';
+            } else if (query.includes('học phí')) {
+                response = 'Chào bạn, hạn chót đóng học phí cho Học kỳ này là <strong>17:00 ngày 28/02/2026</strong>.';
+            } else if (query.includes('lịch thi')) {
+                response = 'Lịch thi cuối kỳ dự kiến công bố vào <strong>tuần thứ 10</strong> của học kỳ.';
+            } else if (query.includes('ký túc xá') || query.includes('ktx')) {
+                response = 'Đăng ký Ký túc xá bắt đầu từ ngày <strong>01/08/2026</strong>.';
+            } else {
+                response = 'Cảm ơn câu hỏi của bạn! Hãy thử hỏi về "học phí", "lịch thi" hoặc "ký túc xá".';
+            }
 
-        if (query === '') {
-            response = '🤔 Vui lòng nhập câu hỏi của bạn vào ô tìm kiếm.';
-        } else if (query.includes('học phí')) {
-            response = 'Chào bạn, hạn chót đóng học phí cho Học kỳ này là <strong>17:00 ngày 28/02/2026</strong>. Bạn có thể thanh toán qua cổng thanh toán trực tuyến của trường.';
-        } else if (query.includes('lịch thi')) {
-            response = 'Lịch thi cuối kỳ dự kiến sẽ được công bố vào <strong>tuần thứ 10</strong> của học kỳ. Bạn vui lòng theo dõi thông báo trên trang web của phòng Đào tạo nhé.';
-        } else if (query.includes('ký túc xá') || query.includes('ktx')) {
-            response = 'Việc đăng ký Ký túc xá cho năm học mới sẽ bắt đầu từ ngày <strong>01/08/2026</strong>. Sinh viên có thể đăng ký trực tuyến tại trang web của Trung tâm Dịch vụ Sinh viên.';
-        } else {
-            response = 'Cảm ơn câu hỏi của bạn! Hiện tại tôi vẫn đang học hỏi. Câu trả lời chi tiết hơn sẽ sớm được cập nhật. Bạn thử hỏi về "học phí", "lịch thi" hoặc "ký túc xá" xem sao nhé!';
-        }
-
-        // Hiển thị kết quả
-        searchResult.innerHTML = response;
-        searchResult.style.display = 'block';
-    });
-
-
-    // --- CONTACT FORM LOGIC (NÂNG CẤP VỚI VALIDATION) ---
-    const contactForm = document.getElementById('contact-form');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    
-    // Lấy các thẻ span báo lỗi
-    const nameError = document.getElementById('name-error');
-    const emailError = document.getElementById('email-error');
-    
-    // Lấy div thông báo trạng thái
-    const statusMessage = document.getElementById('form-status-message');
-    
-    // Lấy nút submit
-    const submitButton = contactForm.querySelector('.contact__button');
-
-    // Hàm kiểm tra định dạng email (Regex)
-    function isValidEmail(email) {
-        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(String(email).toLowerCase());
+            searchResult.innerHTML = response;
+            searchResult.style.display = 'block';
+        });
     }
 
-    contactForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Ngăn form gửi đi
+    // --- SMOOTH SCROLL ---
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        });
+    });
 
-        // 1. Reset trạng thái
-        let isValid = true;
-        nameError.textContent = '';
-        emailError.textContent = '';
-        statusMessage.textContent = '';
-        statusMessage.className = '';
-        nameInput.classList.remove('contact__input--invalid');
-        emailInput.classList.remove('contact__input--invalid');
+    // --- LOGIN & REGISTER MODAL ---
+    const authModal = document.getElementById('auth-modal');
+    const loginTab = document.getElementById('tab-login');
+    const registerTab = document.getElementById('tab-register');
+    const loginFormEl = document.getElementById('login-form');
+    const registerFormEl = document.getElementById('register-form');
+    const closeModalBtn = document.querySelector('.auth-modal__close');
 
-        const nameValue = nameInput.value.trim();
-        const emailValue = emailInput.value.trim();
+    document.querySelectorAll('.header__nav-link').forEach(link => {
+        link.addEventListener('click', e => {
+            const target = e.target.textContent.trim();
+            if(target === "Đăng nhập") {
+                authModal.style.display = "block";
+                loginFormEl.style.display = "block";
+                registerFormEl.style.display = "none";
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else if(target === "Đăng ký") {
+                authModal.style.display = "block";
+                loginFormEl.style.display = "none";
+                registerFormEl.style.display = "block";
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+            }
+        });
+    });
 
-        // 2. Kiểm tra Tên
-        if (nameValue === '') {
-            nameError.textContent = 'Vui lòng nhập tên của bạn.';
-            nameInput.classList.add('contact__input--invalid');
-            isValid = false;
-        }
+    closeModalBtn.addEventListener('click', () => { authModal.style.display = "none"; });
+    document.querySelector('.auth-modal__overlay').addEventListener('click', () => { authModal.style.display = "none"; });
 
-        // 3. Kiểm tra Email
-        if (emailValue === '') {
-            emailError.textContent = 'Vui lòng nhập email của bạn.';
-            emailInput.classList.add('contact__input--invalid');
-            isValid = false;
-        } else if (!isValidEmail(emailValue)) {
-            emailError.textContent = 'Định dạng email không hợp lệ.';
-            emailInput.classList.add('contact__input--invalid');
-            isValid = false;
-        }
+    loginTab.addEventListener('click', () => {
+        loginFormEl.style.display = "block";
+        registerFormEl.style.display = "none";
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
+    });
+    registerTab.addEventListener('click', () => {
+        loginFormEl.style.display = "none";
+        registerFormEl.style.display = "block";
+        loginTab.classList.remove('active');
+        registerTab.classList.add('active');
+    });
 
-        // 4. Xử lý kết quả
-        if (isValid) {
-            // THÀNH CÔNG
-            statusMessage.textContent = `Cảm ơn ${nameValue}! Chúng tôi sẽ gửi thông tin đến ${emailValue} ngay khi có. ✨`;
-            statusMessage.classList.add('status--success');
+    // --- ACCOUNTS ---
+    const defaultAccounts = [
+        { username: "sinhvien1", email: "sinhvien1@unifaq.edu.vn", password: "123456" },
+        { username: "admin", email: "admin@unifaq.edu.vn", password: "admin123" }
+    ];
 
-            // Vô hiệu hóa form để tránh gửi lại
-            nameInput.disabled = true;
-            emailInput.disabled = true;
-            submitButton.disabled = true;
-            submitButton.textContent = 'Đã đăng ký!';
-            
+    function getStoredAccounts() {
+        const stored = localStorage.getItem('accounts');
+        if(stored) return JSON.parse(stored);
+        return [...defaultAccounts];
+    }
+
+    function saveAccounts(accounts) {
+        localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+
+    // --- LOGIN ---
+    loginFormEl.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const usernameInput = document.getElementById('username').value.trim();
+        const passwordInput = document.getElementById('password').value.trim();
+
+        const accounts = getStoredAccounts();
+        const userFound = accounts.find(acc => (acc.username === usernameInput || acc.email === usernameInput) && acc.password === passwordInput);
+
+        if(userFound) {
+            localStorage.setItem('loggedInUser', JSON.stringify(userFound));
+            window.location.href = "dashboard.html"; // chuyển sang dashboard
         } else {
-            // THẤT BẠI
-            statusMessage.textContent = 'Vui lòng kiểm tra lại thông tin bạn đã nhập.';
-            statusMessage.classList.add('status--error');
+            alert("❌ Sai tên đăng nhập hoặc mật khẩu! Vui lòng thử lại.");
+        }
+
+        loginFormEl.reset();
+    });
+
+    // --- REGISTER ---
+    registerFormEl.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const newUsername = document.getElementById('reg-username').value.trim();
+        const newEmail = document.getElementById('reg-email').value.trim();
+        const newPassword = document.getElementById('reg-password').value.trim();
+
+        const accounts = getStoredAccounts();
+        const exists = accounts.some(acc => acc.username === newUsername || acc.email === newEmail);
+
+        if(exists) {
+            alert("❌ Tên đăng nhập hoặc email đã tồn tại!");
+        } else {
+            accounts.push({ username: newUsername, email: newEmail, password: newPassword });
+            saveAccounts(accounts);
+            alert("🎉 Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
+            registerFormEl.reset();
+            loginTab.click();
         }
     });
 

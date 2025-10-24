@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniFAQ - Giải đáp thắc mắc cho sinh viên</title>
-    <meta name="description" content="UniFAQ là trợ lý AI giúp sinh viên trả lời mọi câu hỏi về cuộc sống và học tập tại trường đại học. Nhanh chóng, chính xác, 24/7.">
+    <title>MockTest - Giải đáp thắc mắc cho sinh viên</title>
+    <meta name="description" content="MockTest là trợ lý AI giúp sinh viên trả lời mọi câu hỏi về cuộc sống và học tập tại trường đại học.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,17 +12,24 @@
 </head>
 <body>
 
+    <!-- HEADER -->
     <header class="header">
-        <div class="container header__container">
-            <a href="#" class="header__logo">UniFAQ 💡</a>
-            <nav class="header__nav">
-                <a href="#features" class="header__nav-link">Tính năng</a>
-                <a href="#contact" class="header__nav-link">Liên hệ</a>
-            </nav>
-        </div>
-    </header>
-
+    <div class="container header__container">
+        <a href="#" class="header__logo">MockTest 💡</a>
+        
+        <!-- Trang chủ ở giữa -->
+        <a href="tu.html" class="header__home">🏠 Trang chủ</a>
+        
+        <nav class="header__nav">
+            <a href="#features" class="header__nav-link">Tính năng</a>
+            <a href="#" class="header__nav-link">Đăng nhập</a>
+            <a href="#" class="header__nav-link">Đăng ký</a>
+        </nav>
+    </div>
+</header>
+    <!-- MAIN -->
     <main>
+        <!-- HERO -->
         <section class="hero">
             <div class="container hero__container">
                 <div class="hero__content">
@@ -43,12 +50,12 @@
                 </div>
             </div>
         </section>
-
+        <!-- FEATURES -->
         <section id="features" class="features">
             <div class="container">
-                <h2 class="section-title">Tại sao nên chọn UniFAQ?</h2>
+                <h2 class="section-title">Tại sao nên chọn MockTest?</h2>
                 <div class="features__grid">
-                     <div class="feature-card">
+                    <div class="feature-card">
                         <h3 class="feature-card__title">🚀 Tức thì</h3>
                         <p class="feature-card__description">Không cần chờ email phản hồi từ phòng công tác sinh viên. Nhận câu trả lời trong vài giây.</p>
                     </div>
@@ -63,41 +70,60 @@
                 </div>
             </div>
         </section>
-
-        <section id="contact" class="contact">
-            <div class="container">
-                <h2 class="section-title">Nhận thông tin cập nhật</h2>
-                <p class="contact__subtitle">Đăng ký để nhận thông báo khi UniFAQ ra mắt phiên bản chính thức!</p>
-                
-                <form class="contact__form" id="contact-form" novalidate>
-                    
-                    <div id="form-status-message"></div>
-
-                    <div class="contact__form-group">
-                        <label for="name" class="contact__label">Tên của bạn</label>
-                        <input type="text" id="name" class="contact__input" required>
-                        <span class="contact__error-message" id="name-error"></span>
-                    </div>
-                    
-                    <div class="contact__form-group">
-                        <label for="email" class="contact__label">Email</label>
-                        <input type="email" id="email" class="contact__input" required>
-                        <span class="contact__error-message" id="email-error"></span>
-                    </div>
-                    
-                    <button type="submit" class="button button--primary contact__button">Đăng ký ngay</button>
-                </form>
-            </div>
-        </section>
     </main>
-
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 UniFAQ. Một sản phẩm dành cho sinh viên.</p>
+            <p>&copy; 2025 MockTest. Một sản phẩm dành cho sinh viên.</p>
+            <div class="footer__contact-links">
+                <a href="mailto:contact@MockTest.edu.vn" class="footer__link">📧 Email: contact@MockTest.edu.vn</a>
+                <a href="https://www.facebook.com/MockTest.official" target="_blank" class="footer__link">🌐 Facebook: MockTest Official</a>
+            </div>
         </div>
     </footer>
+    <!-- LOGIN & REGISTER MODAL -->
+    <div id="auth-modal" class="auth-modal">
+        <div class="auth-modal__overlay"></div>
+        <div class="auth-modal__content">
+            <button class="auth-modal__close">&times;</button>
+
+            <div class="auth-modal__tabs">
+                <button id="tab-login" class="auth-modal__tab active">Đăng nhập</button>
+                <button id="tab-register" class="auth-modal__tab">Đăng ký</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="login-form" class="auth-form">
+                <div class="auth-form__group">
+                    <label for="username">Email hoặc Tên đăng nhập</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="auth-form__group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="button button--primary">Đăng nhập</button>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="register-form" class="auth-form" style="display:none;">
+                <div class="auth-form__group">
+                    <label for="reg-username">Tên đăng nhập</label>
+                    <input type="text" id="reg-username" required>
+                </div>
+                <div class="auth-form__group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="auth-form__group">
+                    <label for="reg-password">Mật khẩu</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                <button type="submit" class="button button--primary">Đăng ký</button>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
-
 </body>
 </html>

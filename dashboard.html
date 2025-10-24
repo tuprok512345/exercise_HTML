@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>English MockTest - Full Exam</title>
+
+  <!-- React + Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <style>
+    body { font-family: "Be Vietnam Pro", sans-serif; background:#f7f8fb; margin:0; padding:36px; color:#222 }
+    .container { max-width:980px; margin:0 auto; }
+    h1 { text-align:center; color:#0b74ff; margin-bottom:18px }
+    .card { background:#fff; border-radius:12px; padding:24px; box-shadow:0 6px 18px rgba(20,20,40,0.06); }
+    .center { text-align:center }
+    .btn { background:#0b74ff; color:#fff; padding:10px 16px; border-radius:8px; border:none; cursor:pointer }
+    .btn:disabled { background:#bfcfe8; cursor:not-allowed }
+    .timer { color:#d9534f; font-weight:700; margin-bottom:12px; text-align:center }
+    .choices button { display:block; width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #e3e6ea; background:#f5f6f8; cursor:pointer; text-align:left }
+    .choices button.selected { background:#0b74ff; color:#fff }
+    .passage { background:#f3f6ff; padding:14px; border-radius:8px; margin-bottom:12px; white-space:pre-line }
+    .nav { display:flex; justify-content:space-between; margin-top:18px }
+    textarea { width:100%; min-height:180px; padding:10px; border-radius:8px; border:1px solid #e3e6ea }
+    .muted { color:#666; font-size:0.95rem }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 English MockTest - Full Exam</h1>
+    <div id="root"></div>
+  </div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const data = {
+      times: { reading: 15*60, writing: 20*60, listening: 10*60 },
+      
+      // === READING ===
+      reading: {
+        passageTitle: "Where are the Harry Potter Stars now?",
+        passageText: "The actors who played the children in the Harry Potter movies are now adults...",
+        questions: [
+          { q: "1. Who thought about leaving the Harry Potter series?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Rupert Grint" },
+          { q: "2. Who felt similar to their character?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Emma Watson" }
+        ]
+      },
+
+      // === WRITING ===
+      writing: {
+        prompt: `"A problem shared is a problem halved". Write an essay about discussing personal problems with a friend.`,
+        guidance: "Write about 250–350 words."
+      },
+
+      // === LISTENING ===
+      listening: [
+        { q: "1. Wakeboarding began in ________.", correct: "California" },
+        { q: "2. The wakeboarder is pulled behind a boat that travels at about ________ mph.", correct: "25" },
+        { q: "3. A spin of 1260 degrees means turning around ________ and a half times.", correct: "three" },
+        { q: "4. The Wakestock festival takes place in ________, North Wales.", correct: "Abersoch" },
+        { q: "5. About ________ million people around the world do wakeboarding.", correct: "3" },
+        { q: "6. Roller derby originally began in the ________.", correct: "1930s" },
+        { 
+          q: "7. Where did the revival of roller derby start?", 
+          options: ["A. Canada","B. Texas","C. England","D. Australia"], 
+          correct: "B. Texas" 
+        },
+        { 
+          q: "8. How many players are there on each roller derby team?", 
+          options: ["A. Four","B. Five","C. Six","D. Seven"], 
+          correct: "B. Five" 
+        },
+        { 
+          q: "9. What happens if a player trips another one?", 
+          options: ["A. She is penalised.","B. The team loses a point.","C. The game stops.","D. The player is sent off."], 
+          correct: "A. She is penalised." 
+        },
+        { 
+          q: "10. What is Jules’ nickname?", 
+          options: ["A. The Julexpress","B. The Julifier","C. The Roller Jules","D. The Fast Juls"], 
+          correct: "B. The Julifier" 
+        }
+      ]
+    };
+
+    // =============== TIMER ==================
+    const Timer = ({ seconds }) => {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return <div className="timer">Time Remaining: {String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}</div>;
+    };
+
+    const StartScreen = ({ onStart }) => (
+      <div className="card center">
+        <h2>Welcome to the English MockTest</h2>
+        <p className="muted">Bạn sẽ làm theo thứ tự: <strong>Reading → Writing → Listening</strong>.</p>
+        <button className="btn" onClick={onStart}>Bắt đầu làm bài ▶</button>
+      </div>
+    );
+
+    // =============== READING ==================
+    function ReadingSection({ onDone, initialTime }) {
+      const p = data.reading;
+      const [time, setTime] = useState(initialTime);
+      const [index, setIndex] = useState(0);
+      const [answers, setAnswers] = useState(Array(p.questions.length).fill(null));
+      const [locked, setLocked] = useState(false);
+
+      useEffect(() => {
+        if (locked) return;
+        const t = setInterval(() => setTime(prev => prev<=1?(clearInterval(t),handleSubmit(true),0):prev-1), 1000);
+        return () => clearInterval(t);
+      }, [locked]);
+
+      const handleSelect = opt => {
+        const arr = [...answers]; arr[index] = opt; setAnswers(arr);
+      };
+
+      const handleSubmit = () => {
+        if (!window.confirm("Bạn có chắc muốn nộp phần Reading này không?")) return;
+        setLocked(true);
+        const correct = p.questions.reduce((a,q,i)=>answers[i]===q.correct?a+1:a,0);
+        onDone({section:"reading",locked:true,answers,correctCount:correct,total:p.questions.length});
+      };
+
+      return (
+        <div className={`card ${locked?"locked-overlay":""}`}>
+          <h2>Reading</h2>
+          <Timer seconds={time}/>
+          <div className="passage">
+            <strong>{p.passageTitle}</strong>
+            <p>{p.passageText}</p>
+          </div>
+          <h3>Question {index+1}</h3>
+          <p>{p.questions[index].q}</p>
+          <div className="choices">
+            {p.questions[index].options.map(opt=>( 
+              <button key={opt} onClick={()=>!locked&&handleSelect(opt)} className={answers[index]===opt?"selected":""} disabled={locked}>{opt}</button>
+            ))}
+          </div>
+          <div className="nav">
+            <button className="btn" onClick={()=>setIndex(i=>Math.max(0,i-1))} disabled={index===0||locked}>⬅ Prev</button>
+            <div style={{display:"flex",gap:10}}>
+              <button className="btn" onClick={handleSubmit} disabled={locked}>Submit Section</button>
+              <button className="btn" onClick={()=>setIndex(i=>Math.min(p.questions.length-1,i+1))} disabled={index===p.questions.length-1||locked}>Next ➡</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // =============== WRITING ==================
+    function WritingSection({ onDone, initialTime }) {
+      const w = data.writing;
+      const [text, setText] = useState("");
+      const [time, setTime] = useState(initialTime);
+      const [locked, setLocked] = useState(false);
+
+      useEffect(() => {
+        if (locked) return;
+        const t = setInterval(() => setTime(p=>p<=1?(clearInterval(t),handleSubmit(true),0):p-1),1000);
+        return ()=>clearInterval(t);
+      }, [locked]);
+
+      const handleSubmit = () => {
+        if (!window.confirm("Bạn có chắc muốn nộp phần Writing này không?")) return;
+        setLocked(true);
+        onDone({section:"writing",locked:true,text});
+      };
+
+      return (
+        <div className={`card ${locked?"locked-overlay":""}`}>
+          <h2>Writing</h2>
+          <Timer seconds={time}/>
+          <div className="passage">{w.prompt}</div>
+          <p className="muted">{w.guidance}</p>
+          <textarea value={text} onChange={e=>setText(e.target.value)} disabled={locked}/>
+          <div className="nav">
+            <div/>
+            <button className="btn" onClick={handleSubmit} disabled={locked}>Submit Section</button>
+          </div>
+        </div>
+      );
+    }
+
+    // =============== LISTENING ==================
+    function ListeningSection({ onDone, initialTime }) {
+      const list = data.listening;
+      const [index, setIndex] = useState(0);
+      const [answers, setAnswers] = useState(Array(list.length).fill(""));
+      const [time, setTime] = useState(initialTime);
+      const [locked, setLocked] = useState(false);
+
+      useEffect(()=>{
+        if(locked) return;
+        const t=setInterval(()=>setTime(p=>p<=1?(clearInterval(t),handleSubmit(true),0):p-1),1000);
+        return()=>clearInterval(t);
+      },[locked]);
+
+      const handleSubmit = () => {
+        if (!window.confirm("Bạn có chắc muốn nộp phần Listening này không?")) return;
+        setLocked(true);
+        const correct=list.reduce((a,q,i)=>{
+          if(q.options){ return answers[i]===q.correct?a+1:a; }
+          else { return answers[i].trim().toLowerCase()===q.correct.toLowerCase()?a+1:a; }
+        },0);
+        onDone({section:"listening",locked:true,answers,correctCount:correct,total:list.length});
+      };
+
+      const handleChange=v=>{
+        const arr=[...answers];arr[index]=v;setAnswers(arr);
+      };
+
+      return (
+        <div className={`card ${locked?"locked-overlay":""}`}>
+          <h2>🎧 Listening: New Olympic Sports – Wakeboarding & Roller Derby</h2>
+          <audio controls style={{width:"100%",marginBottom:12}}>
+            <source src="B2_sports_interviews.mp3" type="audio/mpeg"/>
+            Your browser does not support the audio element.
+          </audio>
+          <Timer seconds={time}/>
+          <h3>Question {index+1}</h3>
+          <p>{list[index].q}</p>
+
+          {list[index].options ? (
+            <div className="choices">
+              {list[index].options.map(opt=>(
+                <button key={opt} onClick={()=>!locked&&handleChange(opt)} className={answers[index]===opt?"selected":""} disabled={locked}>{opt}</button>
+              ))}
+            </div>
+          ) : (
+            <input value={answers[index]} onChange={e=>handleChange(e.target.value)} disabled={locked} style={{width:"100%",padding:10}}/>
+          )}
+
+          <div className="nav">
+            <button className="btn" onClick={()=>setIndex(i=>Math.max(0,i-1))} disabled={index===0||locked}>Prev</button>
+            <div style={{display:"flex",gap:10}}>
+              <button className="btn" onClick={handleSubmit} disabled={locked}>Submit Section</button>
+              <button className="btn" onClick={()=>setIndex(i=>Math.min(list.length-1,i+1))} disabled={index===list.length-1||locked}>Next</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // =============== MAIN APP ==================
+    function App() {
+      const [phase,setPhase]=useState("start");
+      const [results,setResults]=useState({});
+
+      const handleStart=()=>setPhase("reading");
+      const handleSectionDone=d=>{
+        setResults(p=>({...p,[d.section]:d}));
+        if(d.section==="reading")setPhase("writing");
+        else if(d.section==="writing")setPhase("listening");
+        else if(d.section==="listening")setPhase("result");
+      };
+
+      if(phase==="start")return<StartScreen onStart={handleStart}/>;
+      if(phase==="reading")return<ReadingSection onDone={handleSectionDone} initialTime={data.times.reading}/>;
+      if(phase==="writing")return<WritingSection onDone={handleSectionDone} initialTime={data.times.writing}/>;
+      if(phase==="listening")return<ListeningSection onDone={handleSectionDone} initialTime={data.times.listening}/>;
+      
+      if(phase==="result")return(
+        <div className="card center">
+          <h2>✅ Test Completed</h2>
+          <p>Bạn đã hoàn thành toàn bộ bài thi!</p>
+          <div style={{ marginTop: "20px", display: "flex", gap: "12px", justifyContent: "center" }}>
+            <button className="btn" onClick={()=>setPhase("start")}>🔁 Làm lại bài</button>
+            <a href="tu.html" className="btn" style={{ textDecoration: "none", lineHeight: "40px" }}>🏠 Quay lại Trang chủ</a>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+  </script>
+</body>
+</html>

@@ -1,130 +1,182 @@
-const DATA_FILE = 'faqs.json';
-let allFaqsData = []; // Biến toàn cục để lưu trữ dữ liệu, dùng cho việc lọc
+const { useState, useEffect } = React;
 
-/**
- * Hiển thị các trạng thái (Loading, Error, Empty) vào một khu vực trên DOM.
- * @param {string} state - Tên của trạng thái ('loading', 'error', 'empty').
- * @param {string} message - Chi tiết thông báo.
- * @param {HTMLElement} displayArea - Phần tử DOM để hiển thị.
- */
-function renderState(state, message, displayArea) {
-    if (!displayArea) return;
-
-    let icon = '';
-    let title = '';
-
-    switch (state) {
-        case 'loading':
-            icon = '⏳';
-            title = 'Đang Tải Dữ liệu...';
-            break;
-        case 'error':
-            icon = '❌';
-            title = 'Lỗi Tải Dữ liệu!';
-            break;
-        case 'empty':
-            icon = '🤷';
-            title = 'Không có dữ liệu.';
-            break;
-    }
-
-    displayArea.innerHTML = `
-        <div class="state-message state-message--${state}" aria-live="polite">
-            <div class="state-message__icon">${icon}</div>
-            <h3 class="state-message__title">${title}</h3>
-            <p class="state-message__details">${message}</p>
-        </div>
-    `;
+// =============== TIMER COMPONENT ===============
+function Timer({ seconds }) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return (
+    <div className="timer">
+      ⏱ Time Remaining: {String(mins).padStart(2, "0")}:
+      {String(secs).padStart(2, "0")}
+    </div>
+  );
 }
 
-/**
- * Render danh sách các câu hỏi FAQ ra DOM.
- * @param {Array<object>} faqs - Mảng các đối tượng FAQ.
- * @param {HTMLElement} displayArea - Phần tử DOM để hiển thị.
- */
-function renderFaqs(faqs, displayArea) {
-    if (!displayArea) return;
+// =============== QUIZ DATA =====================
+const quizData = {
+  Reading: Array.from({ length: 20 }, (_, i) => ({
+    q: `Reading Question ${i + 1}: What is the correct answer?`,
+    options: ["Option A", "Option B", "Option C"],
+    correct: "Option A",
+  })),
+  Listening: Array.from({ length: 10 }, (_, i) => ({
+    q: `Listening Question ${i + 1}: Choose the correct answer.`,
+    options: ["Option 1", "Option 2", "Option 3"],
+    correct: "Option 1",
+  })),
+};
 
-    if (!faqs || faqs.length === 0) {
-        renderState('empty', 'Không tìm thấy câu hỏi nào phù hợp với từ khóa bạn tìm kiếm.', displayArea);
-        return;
-    }
-
-    const faqListHTML = faqs.map(faq => `
-        <details class="faq-item">
-            <summary class="faq-item__question">❓ ${faq.question}</summary>
-            <div class="faq-item__answer">
-                <p>✅ ${faq.answer}</p>
-            </div>
-        </details>
-    `).join('');
-
-    displayArea.innerHTML = faqListHTML;
+// =============== INITIAL ANSWERS ===============
+function initAnswers() {
+  const initial = {};
+  Object.keys(quizData).forEach((part) => {
+    initial[part] = Array(quizData[part].length).fill(null);
+  });
+  return initial;
 }
 
-/**
- * Lọc danh sách FAQ dựa trên từ khóa từ ô tìm kiếm.
- */
-function filterFaqs() {
-    const searchInput = document.getElementById('header-search-input');
-    const displayArea = document.getElementById('data-display-area');
-    if (!searchInput || !displayArea) return;
+// =============== MAIN APP ======================
+function App() {
+  const [currentPart, setCurrentPart] = useState("Reading");
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState(initAnswers());
+  const [submitted, setSubmitted] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(60 * 60); // 60 phút = 3600 giây
+  const [readingLocked, setReadingLocked] = useState(false);
 
-    const keyword = searchInput.value.toLowerCase().trim();
-
-    if (!keyword) {
-        renderFaqs(allFaqsData, displayArea);
-        return;
+  // Countdown timer
+  useEffect(() => {
+    if (submitted || readingLocked) return;
+    if (timeLeft <= 0) {
+      alert("Time's up! Reading section locked.");
+      lockReading();
+      return;
     }
+    const timer = setInterval(() => setTimeLeft((t) => t - 1), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, submitted, readingLocked]);
 
-    const filteredFaqs = allFaqsData.filter(faq =>
-        faq.question.toLowerCase().includes(keyword) ||
-        faq.answer.toLowerCase().includes(keyword)
+  const handleSelectPart = (part) => {
+    if (part === "Reading" && readingLocked) {
+      alert("Reading section is locked. Please continue with Listening.");
+      return;
+    }
+    setCurrentPart(part);
+    setCurrentQuestionIndex(0);
+  };
+
+  const handleSelectAnswer = (choice) => {
+    const newAnswers = { ...answers };
+    newAnswers[currentPart][currentQuestionIndex] = choice;
+    setAnswers(newAnswers);
+  };
+
+  const handleNext = () => {
+    if (currentQuestionIndex < quizData[currentPart].length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex((prev) => prev - 1);
+    }
+  };
+
+  const lockReading = () => {
+    setReadingLocked(true);
+    alert("Reading section has been submitted and locked.");
+    setCurrentPart("Listening");
+    setTimeLeft(40 * 60); // 40 phút cho Listening
+  };
+
+  const handleSubmit = () => {
+    if (currentPart === "Reading" && !readingLocked) {
+      if (confirm("Submit Reading section and move to Listening?")) {
+        lockReading();
+      }
+      return;
+    }
+    if (currentPart === "Listening") {
+      if (confirm("Submit full test?")) {
+        setSubmitted(true);
+      }
+    }
+  };
+
+  if (submitted) {
+    // Calculate total
+    let totalScore = 0;
+    let totalQuestions = 0;
+
+    Object.keys(quizData).forEach((part) => {
+      quizData[part].forEach((q, i) => {
+        totalQuestions++;
+        if (answers[part][i] === q.correct) totalScore++;
+      });
+    });
+
+    return (
+      <div className="app result">
+        <h2>✅ Test Completed!</h2>
+        <p>Total Score: {totalScore} / {totalQuestions}</p>
+        <p>Reading: {
+          quizData.Reading.reduce(
+            (acc, q, i) => acc + (answers.Reading[i] === q.correct ? 1 : 0),
+            0
+          )
+        } / 20</p>
+        <p>Listening: {
+          quizData.Listening.reduce(
+            (acc, q, i) => acc + (answers.Listening[i] === q.correct ? 1 : 0),
+            0
+          )
+        } / 10</p>
+      </div>
     );
+  }
 
-    renderFaqs(filteredFaqs, displayArea);
+  const currentQuestion = quizData[currentPart][currentQuestionIndex];
+
+  return (
+    <div className="app">
+      <Timer seconds={timeLeft} />
+
+      <div className="part-selector">
+        {Object.keys(quizData).map((part) => (
+          <button
+            key={part}
+            className={currentPart === part ? "active" : ""}
+            onClick={() => handleSelectPart(part)}
+          >
+            {part}
+          </button>
+        ))}
+      </div>
+
+      <QuestionCard
+        question={currentQuestion}
+        index={currentQuestionIndex}
+        selected={answers[currentPart][currentQuestionIndex]}
+        onSelect={handleSelectAnswer}
+      />
+
+      <NavBar
+        onPrev={currentQuestionIndex > 0 ? handlePrev : null}
+        onNext={
+          currentQuestionIndex < quizData[currentPart].length - 1
+            ? handleNext
+            : null
+        }
+        onSubmit={handleSubmit}
+        isLast={
+          currentPart === "Listening" &&
+          currentQuestionIndex === quizData[currentPart].length - 1
+        }
+        part={currentPart}
+      />
+    </div>
+  );
 }
 
-/**
- * Hàm chính: Tải dữ liệu từ file JSON và khởi động ứng dụng.
- */
-async function main() {
-    const displayArea = document.getElementById('data-display-area');
-    const searchInput = document.getElementById('header-search-input');
-    if (!displayArea) return;
-
-    renderState('loading', 'Vui lòng chờ trong giây lát...', displayArea);
-
-    try {
-        const response = await fetch(DATA_FILE);
-        if (!response.ok) {
-            throw new Error(`Lỗi HTTP: ${response.status}`);
-        }
-        const data = await response.json();
-
-        if (!Array.isArray(data) || data.length === 0) {
-            renderState('empty', `Tệp dữ liệu ${DATA_FILE} bị trống hoặc không đúng định dạng.`, displayArea);
-            return;
-        }
-
-        allFaqsData = data; // Lưu dữ liệu vào biến toàn cục
-        renderFaqs(allFaqsData, displayArea);
-
-        // Thêm sự kiện tìm kiếm sau khi có dữ liệu
-        if (searchInput) {
-            searchInput.addEventListener('keyup', filterFaqs);
-        }
-
-    } catch (error) {
-        console.error('Lỗi khi tải dữ liệu:', error);
-        renderState('error', `Không thể tải dữ liệu từ ${DATA_FILE}. Chi tiết: ${error.message}`, displayArea);
-    }
-}
-
-// Chạy hàm chính khi DOM đã sẵn sàng
-document.addEventListener('DOMContentLoaded', main);
-
-// Export các hàm cần thiết cho việc kiểm thử với Jest
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { renderState, renderFaqs };
-}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
