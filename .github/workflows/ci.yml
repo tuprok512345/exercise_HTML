@@ -1,0 +1,56 @@
+# Tên workflow bạn đã chọn
+name: CI - Build & Test
+
+# Kích hoạt khi push hoặc pull request vào nhánh main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Dùng Node.js 18 như bạn chỉ định (hoặc 20 là LTS mới hơn)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      # Chạy script "lint" từ package.json
+      # Workflow sẽ thất bại nếu code không qua lint
+      - name: Run Lint
+        run: npm run lint
+
+      # Chạy script "test:coverage" từ package.json
+      - name: Run Tests and Generate Coverage
+        run: npm run test:coverage
+
+      # Tải lên báo cáo coverage
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      # --- Các bước Docker bạn đã thêm ---
+      - name: Build Docker image
+        run: docker build -t mocktest-app .
+
+      - name: Save Docker image as artifact
+        run: docker save mocktest-app | gzip > mocktest-app.tar.gz
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: mocktest-app.tar.gz
+

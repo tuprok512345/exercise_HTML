@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "test": "jest"
+    "test": "jest --coverage",
+    "lint": "echo 'No lint configured yet'"
   },
   "keywords": [],
   "author": "",
