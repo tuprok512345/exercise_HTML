@@ -1,3 +1,4 @@
+import React from 'react';
 function Choices({ options, selected, onSelect }) {
   return (
     <div className="choices">

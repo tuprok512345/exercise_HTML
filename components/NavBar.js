@@ -1,3 +1,4 @@
+import React from 'react';
 function NavBar({ onPrev, onNext, onSubmit, isLast, part }) {
   return (
     <div className="navbar">

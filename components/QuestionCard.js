@@ -1,3 +1,6 @@
+import React from 'react';
+import Choices from './Choices.js';
+
 function QuestionCard({ question, index, selected, onSelect }) {
   return (
     <div className="question-card">
@@ -13,3 +16,4 @@ function QuestionCard({ question, index, selected, onSelect }) {
 }
 
 export default QuestionCard;
+
