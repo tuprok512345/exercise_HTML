@@ -1,7 +1,5 @@
-# Tên workflow bạn đã chọn
 name: CI - Build & Test
 
-# Kích hoạt khi push hoặc pull request vào nhánh main
 on:
   push:
     branches: [ main ]
@@ -16,7 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Dùng Node.js 18 như bạn chỉ định (hoặc 20 là LTS mới hơn)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -25,23 +22,24 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # Chạy script "lint" từ package.json
-      # Workflow sẽ thất bại nếu code không qua lint
+      # ===============================================
+      # BƯỚC SỬA LỖI MỚI: Thêm quyền thực thi cho ESLint
+      # ===============================================
+      - name: Fix ESLint permissions
+        run: chmod +x ./node_modules/.bin/eslint
+
       - name: Run Lint
         run: npm run lint
 
-      # Chạy script "test:coverage" từ package.json
       - name: Run Tests and Generate Coverage
         run: npm run test:coverage
 
-      # Tải lên báo cáo coverage
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage/
 
-      # --- Các bước Docker bạn đã thêm ---
       - name: Build Docker image
         run: docker build -t mocktest-app .
 
