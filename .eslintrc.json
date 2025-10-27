@@ -25,7 +25,9 @@
     }
   },
   "rules": {
-    // Bạn có thể thêm các quy tắc tùy chỉnh ở đây sau
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": "off",
+    "no-unused-vars": "warn"
   }
 }
 
