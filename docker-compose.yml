@@ -1,0 +1,35 @@
+services:
+  mocktest-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mocktest_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: mockuser
+      DB_PASSWORD: mockpass
+      DB_NAME: mocktestdb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: postgres:15
+    container_name: mocktest_db
+    environment:
+      POSTGRES_USER: mockuser
+      POSTGRES_PASSWORD: mockpass
+      POSTGRES_DB: mocktestdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
