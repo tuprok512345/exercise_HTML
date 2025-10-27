@@ -12,3 +12,5 @@ function NavBar({ onPrev, onNext, onSubmit, isLast, part }) {
     </div>
   );
 }
+
+export default NavBar;

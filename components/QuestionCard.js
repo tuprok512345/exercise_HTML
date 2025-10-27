@@ -12,4 +12,4 @@ function QuestionCard({ question, index, selected, onSelect }) {
   );
 }
 
-export default Choices;
+export default QuestionCard;
