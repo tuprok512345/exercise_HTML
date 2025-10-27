@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- SEARCH FORM LOGIC ---
     const searchForm = document.getElementById('search-form');
+    // ... (Giữ nguyên logic search của bạn) ...
     const searchInput = document.getElementById('search-input');
     const searchResult = document.getElementById('search-result');
 
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- LOGIN & REGISTER MODAL ---
     const authModal = document.getElementById('auth-modal');
+    // ... (Giữ nguyên logic modal của bạn) ...
     const loginTab = document.getElementById('tab-login');
     const registerTab = document.getElementById('tab-register');
     const loginFormEl = document.getElementById('login-form');
@@ -80,60 +82,100 @@ document.addEventListener('DOMContentLoaded', function() {
         registerTab.classList.add('active');
     });
 
-    // --- ACCOUNTS ---
-    const defaultAccounts = [
-        { username: "sinhvien1", email: "sinhvien1@unifaq.edu.vn", password: "123456" },
-        { username: "admin", email: "admin@unifaq.edu.vn", password: "admin123" }
-    ];
-
-    function getStoredAccounts() {
-        const stored = localStorage.getItem('accounts');
-        if(stored) return JSON.parse(stored);
-        return [...defaultAccounts];
-    }
-
-    function saveAccounts(accounts) {
-        localStorage.setItem('accounts', JSON.stringify(accounts));
-    }
-
-    // --- LOGIN ---
+    // --- LOGIN (ĐÃ SỬA DÙNG fetch VỚI PHP) ---
     loginFormEl.addEventListener('submit', function(event) {
         event.preventDefault();
         const usernameInput = document.getElementById('username').value.trim();
         const passwordInput = document.getElementById('password').value.trim();
 
-        const accounts = getStoredAccounts();
-        const userFound = accounts.find(acc => (acc.username === usernameInput || acc.email === usernameInput) && acc.password === passwordInput);
-
-        if(userFound) {
-            localStorage.setItem('loggedInUser', JSON.stringify(userFound));
-            window.location.href = "dashboard.html"; // chuyển sang dashboard
-        } else {
-            alert("❌ Sai tên đăng nhập hoặc mật khẩu! Vui lòng thử lại.");
-        }
+        fetch('login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: usernameInput,
+                password: passwordInput
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Đăng nhập thành công, chuyển hướng
+                window.location.href = "dashboard.html";
+            } else {
+                // Sử dụng một modal tùy chỉnh thay vì alert()
+                showCustomAlert("❌ " + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showCustomAlert('Lỗi kết nối máy chủ.', 'error');
+        });
 
         loginFormEl.reset();
     });
 
-    // --- REGISTER ---
+    // --- REGISTER (ĐÃ SỬA DÙNG fetch VỚI PHP) ---
     registerFormEl.addEventListener('submit', function(event) {
         event.preventDefault();
         const newUsername = document.getElementById('reg-username').value.trim();
         const newEmail = document.getElementById('reg-email').value.trim();
         const newPassword = document.getElementById('reg-password').value.trim();
 
-        const accounts = getStoredAccounts();
-        const exists = accounts.some(acc => acc.username === newUsername || acc.email === newEmail);
-
-        if(exists) {
-            alert("❌ Tên đăng nhập hoặc email đã tồn tại!");
-        } else {
-            accounts.push({ username: newUsername, email: newEmail, password: newPassword });
-            saveAccounts(accounts);
-            alert("🎉 Đăng ký thành công! Bạn có thể đăng nhập ngay bây giờ.");
-            registerFormEl.reset();
-            loginTab.click();
-        }
+        fetch('register.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: newUsername,
+                email: newEmail,
+                password: newPassword
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showCustomAlert("🎉 " + data.message, 'success');
+                registerFormEl.reset();
+                loginTab.click(); // Chuyển sang tab đăng nhập
+            } else {
+                showCustomAlert("❌ " + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showCustomAlert('Lỗi kết nối máy chủ.', 'error');
+        });
     });
 
+    // --- HÀM THÔNG BÁO TÙY CHỈNH (Thay thế alert) ---
+    function showCustomAlert(message, type = 'info') {
+        // Bạn có thể tạo một modal đẹp hơn, ở đây tôi dùng một div đơn giản
+        let alertBox = document.getElementById('custom-alert');
+        if (!alertBox) {
+            alertBox = document.createElement('div');
+            alertBox.id = 'custom-alert';
+            document.body.appendChild(alertBox);
+        }
+        
+        alertBox.textContent = message;
+        alertBox.style.display = 'block';
+        alertBox.style.position = 'fixed';
+        alertBox.style.top = '20px';
+        alertBox.style.left = '50%';
+        alertBox.style.transform = 'translateX(-50%)';
+        alertBox.style.padding = '15px 25px';
+        alertBox.style.borderRadius = '8px';
+        alertBox.style.zIndex = '1001';
+        alertBox.style.color = 'white';
+        alertBox.style.backgroundColor = (type === 'error') ? '#d9534f' : '#5cb85c';
+        alertBox.style.boxShadow = '0 4px 10px rgba(0,0,0,0.1)';
+
+        // Tự động ẩn sau 3 giây
+        setTimeout(() => {
+            alertBox.style.display = 'none';
+        }, 3000);
+    }
 });
