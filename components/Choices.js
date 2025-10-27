@@ -13,3 +13,6 @@ function Choices({ options, selected, onSelect }) {
     </div>
   );
 }
+
+export default Choices;
+

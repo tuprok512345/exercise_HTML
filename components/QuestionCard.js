@@ -11,3 +11,5 @@ function QuestionCard({ question, index, selected, onSelect }) {
     </div>
   );
 }
+
+export default Choices;
