@@ -5,27 +5,107 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>English MockTest - Full Exam</title>
 
-  <!-- React + Babel -->
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
   <style>
-    body { font-family: "Be Vietnam Pro", sans-serif; background:#f7f8fb; margin:0; padding:36px; color:#222 }
-    .container { max-width:980px; margin:0 auto; }
-    h1 { text-align:center; color:#0b74ff; margin-bottom:18px }
-    .card { background:#fff; border-radius:12px; padding:24px; box-shadow:0 6px 18px rgba(20,20,40,0.06); }
-    .center { text-align:center }
-    .btn { background:#0b74ff; color:#fff; padding:10px 16px; border-radius:8px; border:none; cursor:pointer }
-    .btn:disabled { background:#bfcfe8; cursor:not-allowed }
-    .timer { color:#d9534f; font-weight:700; margin-bottom:12px; text-align:center }
-    .choices button { display:block; width:100%; padding:10px; margin:8px 0; border-radius:8px; border:1px solid #e3e6ea; background:#f5f6f8; cursor:pointer; text-align:left }
-    .choices button.selected { background:#0b74ff; color:#fff }
-    .passage { background:#f3f6ff; padding:14px; border-radius:8px; margin-bottom:12px; white-space:pre-line }
-    .nav { display:flex; justify-content:space-between; margin-top:18px }
-    textarea { width:100%; min-height:180px; padding:10px; border-radius:8px; border:1px solid #e3e6ea }
-    .muted { color:#666; font-size:0.95rem }
+    body { 
+  font-family: "Be Vietnam Pro", sans-serif; 
+  background: #f7f8fb; 
+  margin: 0; 
+  padding: 36px; 
+  color: #222 
+}
+
+.container { 
+  max-width: 980px; 
+  margin: 0 auto; 
+}
+
+h1 { 
+  text-align: center; 
+  color: #0b74ff; 
+  margin-bottom: 18px 
+}
+
+.card { 
+  background: #fff; 
+  border-radius: 12px; 
+  padding: 24px; 
+  box-shadow: 0 6px 18px rgba(20,20,40,0.06); 
+}
+
+.center { 
+  text-align: center 
+}
+
+.btn { 
+  background: #0b74ff; 
+  color: #fff; 
+  padding: 10px 16px; 
+  border-radius: 8px; 
+  border: none; 
+  cursor: pointer 
+}
+
+.btn:disabled { 
+  background: #bfcfe8; 
+  cursor: not-allowed 
+}
+
+.timer { 
+  color: #d9534f; 
+  font-weight: 700; 
+  margin-bottom: 12px; 
+  text-align: center 
+}
+
+.choices button { 
+  display: block; 
+  width: 100%; 
+  padding: 10px; 
+  margin: 8px 0; 
+  border-radius: 8px; 
+  border: 1px solid #e3e6ea; 
+  background: #f5f6f8; 
+  cursor: pointer; 
+  text-align: left 
+}
+
+.choices button.selected { 
+  background: #0b74ff; 
+  color: #fff 
+}
+
+.passage { 
+  background: #f3f6ff; 
+  padding: 14px; 
+  border-radius: 8px; 
+  margin-bottom: 12px; 
+  white-space: pre-line 
+}
+
+.nav { 
+  display: flex; 
+  justify-content: space-between; 
+  margin-top: 18px 
+}
+
+textarea { 
+  width: 100%; 
+  min-height: 180px; 
+  padding: 10px; 
+  border-radius: 8px; 
+  border: 1px solid #e3e6ea 
+}
+
+.muted { 
+  color: #666; 
+  font-size: 0.95rem 
+}
   </style>
+  
 </head>
 <body>
   <div class="container">
@@ -38,8 +118,6 @@
 
     const data = {
       times: { reading: 15*60, writing: 20*60, listening: 10*60 },
-      
-      // === READING ===
       reading: {
         passageTitle: "Where are the Harry Potter Stars now?",
         passageText: "The actors who played the children in the Harry Potter movies are now adults...",
@@ -48,14 +126,10 @@
           { q: "2. Who felt similar to their character?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Emma Watson" }
         ]
       },
-
-      // === WRITING ===
       writing: {
         prompt: `"A problem shared is a problem halved". Write an essay about discussing personal problems with a friend.`,
         guidance: "Write about 250–350 words."
       },
-
-      // === LISTENING ===
       listening: [
         { q: "1. Wakeboarding began in ________.", correct: "California" },
         { q: "2. The wakeboarder is pulled behind a boat that travels at about ________ mph.", correct: "25" },
@@ -63,26 +137,10 @@
         { q: "4. The Wakestock festival takes place in ________, North Wales.", correct: "Abersoch" },
         { q: "5. About ________ million people around the world do wakeboarding.", correct: "3" },
         { q: "6. Roller derby originally began in the ________.", correct: "1930s" },
-        { 
-          q: "7. Where did the revival of roller derby start?", 
-          options: ["A. Canada","B. Texas","C. England","D. Australia"], 
-          correct: "B. Texas" 
-        },
-        { 
-          q: "8. How many players are there on each roller derby team?", 
-          options: ["A. Four","B. Five","C. Six","D. Seven"], 
-          correct: "B. Five" 
-        },
-        { 
-          q: "9. What happens if a player trips another one?", 
-          options: ["A. She is penalised.","B. The team loses a point.","C. The game stops.","D. The player is sent off."], 
-          correct: "A. She is penalised." 
-        },
-        { 
-          q: "10. What is Jules’ nickname?", 
-          options: ["A. The Julexpress","B. The Julifier","C. The Roller Jules","D. The Fast Juls"], 
-          correct: "B. The Julifier" 
-        }
+        { q: "7. Where did the revival of roller derby start?", options: ["A. Canada","B. Texas","C. England","D. Australia"], correct: "B. Texas" },
+        { q: "8. How many players are there on each roller derby team?", options: ["A. Four","B. Five","C. Six","D. Seven"], correct: "B. Five" },
+        { q: "9. What happens if a player trips another one?", options: ["A. She is penalised.","B. The team loses a point.","C. The game stops.","D. The player is sent off."], correct: "A. She is penalised." },
+        { q: "10. What is Jules’ nickname?", options: ["A. The Julexpress","B. The Julifier","C. The Roller Jules","D. The Fast Juls"], correct: "B. The Julifier" }
       ]
     };
 
@@ -101,31 +159,14 @@
       </div>
     );
 
-    // =============== READING ==================
-    function ReadingSection({ onDone, initialTime }) {
-      const p = data.reading;
-      const [time, setTime] = useState(initialTime);
-      const [index, setIndex] = useState(0);
-      const [answers, setAnswers] = useState(Array(p.questions.length).fill(null));
-      const [locked, setLocked] = useState(false);
+    // =============== READING (REFACTORED) ==================
 
-      useEffect(() => {
-        if (locked) return;
-        const t = setInterval(() => setTime(prev => prev<=1?(clearInterval(t),handleSubmit(true),0):prev-1), 1000);
-        return () => clearInterval(t);
-      }, [locked]);
-
-      const handleSelect = opt => {
-        const arr = [...answers]; arr[index] = opt; setAnswers(arr);
-      };
-
-      const handleSubmit = () => {
-        if (!window.confirm("Bạn có chắc muốn nộp phần Reading này không?")) return;
-        setLocked(true);
-        const correct = p.questions.reduce((a,q,i)=>answers[i]===q.correct?a+1:a,0);
-        onDone({section:"reading",locked:true,answers,correctCount:correct,total:p.questions.length});
-      };
-
+    // ----- 1. PRESENTATIONAL Component (Thụ động, chỉ hiển thị) -----
+    // (Chỉ chứa JSX, nhận mọi thứ qua props)
+    function ReadingPresenter({ 
+      p, time, index, answers, locked, 
+      onSelect, onSubmit, onPrev, onNext 
+    }) {
       return (
         <div className={`card ${locked?"locked-overlay":""}`}>
           <h2>Reading</h2>
@@ -138,21 +179,100 @@
           <p>{p.questions[index].q}</p>
           <div className="choices">
             {p.questions[index].options.map(opt=>( 
-              <button key={opt} onClick={()=>!locked&&handleSelect(opt)} className={answers[index]===opt?"selected":""} disabled={locked}>{opt}</button>
+              <button 
+                key={opt} 
+                onClick={() => onSelect(opt)} 
+                className={answers[index] === opt ? "selected" : ""} 
+                disabled={locked}
+              >
+                {opt}
+              </button>
             ))}
           </div>
           <div className="nav">
-            <button className="btn" onClick={()=>setIndex(i=>Math.max(0,i-1))} disabled={index===0||locked}>⬅ Prev</button>
-            <div style={{display:"flex",gap:10}}>
-              <button className="btn" onClick={handleSubmit} disabled={locked}>Submit Section</button>
-              <button className="btn" onClick={()=>setIndex(i=>Math.min(p.questions.length-1,i+1))} disabled={index===p.questions.length-1||locked}>Next ➡</button>
+            <button className="btn" onClick={onPrev} disabled={index === 0 || locked}>⬅ Prev</button>
+            <div style={{display:"flex", gap:10}}>
+              <button className="btn" onClick={onSubmit} disabled={locked}>Submit Section</button>
+              <button className="btn" onClick={onNext} disabled={index === p.questions.length - 1 || locked}>Next ➡</button>
             </div>
           </div>
         </div>
       );
     }
 
-    // =============== WRITING ==================
+    // ----- 2. CONTAINER Component (Thông minh, quản lý logic) -----
+    // (Chứa State, Effect, và các hàm xử lý. Render Presenter)
+    function ReadingSection({ onDone, initialTime }) {
+      const p = data.reading;
+      const [time, setTime] = useState(initialTime);
+      const [index, setIndex] = useState(0);
+      const [answers, setAnswers] = useState(Array(p.questions.length).fill(null));
+      const [locked, setLocked] = useState(false);
+
+      // --- LOGIC ---
+      
+      // (isForced = true sẽ bỏ qua 'confirm' - dùng khi hết giờ)
+      const handleSubmit = (isForced = false) => {
+        if (locked) return; // Ngăn submit nhiều lần
+        
+        if (isForced || window.confirm("Bạn có chắc muốn nộp phần Reading này không?")) {
+          setLocked(true);
+          const correct = p.questions.reduce((a,q,i) => (answers[i] === q.correct ? a + 1 : a), 0);
+          onDone({
+            section: "reading",
+            locked: true,
+            answers,
+            correctCount: correct,
+            total: p.questions.length
+          });
+        }
+      };
+
+      useEffect(() => {
+        if (locked) return;
+        
+        const timerId = setInterval(() => {
+          setTime(prevTime => {
+            if (prevTime <= 1) {
+              clearInterval(timerId);
+              handleSubmit(true); // Hết giờ, ép nộp bài
+              return 0;
+            }
+            return prevTime - 1;
+          });
+        }, 1000);
+
+        return () => clearInterval(timerId);
+      }, [locked]); // Chỉ chạy lại khi 'locked' thay đổi
+
+      const handleSelect = (opt) => {
+        if (locked) return;
+        const newAnswers = [...answers];
+        newAnswers[index] = opt;
+        setAnswers(newAnswers);
+      };
+
+      const handlePrev = () => setIndex(i => Math.max(0, i - 1));
+      const handleNext = () => setIndex(i => Math.min(p.questions.length - 1, i + 1));
+
+      // --- RENDER ---
+      // Container render Presenter, và truyền props xuống
+      return (
+        <ReadingPresenter
+          p={p}
+          time={time}
+          index={index}
+          answers={answers}
+          locked={locked}
+          onSelect={handleSelect}
+          onSubmit={() => handleSubmit(false)} // Nút submit (không ép)
+          onPrev={handlePrev}
+          onNext={handleNext}
+        />
+      );
+    }
+
+    // =============== WRITING (Chưa refactor) ==================
     function WritingSection({ onDone, initialTime }) {
       const w = data.writing;
       const [text, setText] = useState("");
@@ -186,7 +306,7 @@
       );
     }
 
-    // =============== LISTENING ==================
+    // =============== LISTENING (Chưa refactor) ==================
     function ListeningSection({ onDone, initialTime }) {
       const list = data.listening;
       const [index, setIndex] = useState(0);
