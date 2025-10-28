@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "c95dbe29-1218-4897-9cdf-47b9a9a45e11",
+		"name": "Quesions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49595700",
+		"_collection_link": "https://tutran-1091995-2467931.postman.co/workspace/Tran-Tu's-Workspace~2c8cf873-d0b7-4f6c-852a-fb5f14845263/collection/49595700-c95dbe29-1218-4897-9cdf-47b9a9a45e11?action=share&source=collection_link&creator=49595700"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Read All",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Read One",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
