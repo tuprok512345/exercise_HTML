@@ -17,29 +17,24 @@
   padding: 36px; 
   color: #222 
 }
-
 .container { 
   max-width: 980px; 
   margin: 0 auto; 
 }
-
 h1 { 
   text-align: center; 
   color: #0b74ff; 
   margin-bottom: 18px 
 }
-
 .card { 
   background: #fff; 
   border-radius: 12px; 
   padding: 24px; 
   box-shadow: 0 6px 18px rgba(20,20,40,0.06); 
 }
-
 .center { 
   text-align: center 
 }
-
 .btn { 
   background: #0b74ff; 
   color: #fff; 
@@ -48,19 +43,16 @@ h1 {
   border: none; 
   cursor: pointer 
 }
-
 .btn:disabled { 
   background: #bfcfe8; 
   cursor: not-allowed 
 }
-
 .timer { 
   color: #d9534f; 
   font-weight: 700; 
   margin-bottom: 12px; 
   text-align: center 
 }
-
 .choices button { 
   display: block; 
   width: 100%; 
@@ -72,12 +64,10 @@ h1 {
   cursor: pointer; 
   text-align: left 
 }
-
 .choices button.selected { 
   background: #0b74ff; 
   color: #fff 
 }
-
 .passage { 
   background: #f3f6ff; 
   padding: 14px; 
@@ -85,13 +75,11 @@ h1 {
   margin-bottom: 12px; 
   white-space: pre-line 
 }
-
 .nav { 
   display: flex; 
   justify-content: space-between; 
   margin-top: 18px 
 }
-
 textarea { 
   width: 100%; 
   min-height: 180px; 
@@ -99,7 +87,6 @@ textarea {
   border-radius: 8px; 
   border: 1px solid #e3e6ea 
 }
-
 .muted { 
   color: #666; 
   font-size: 0.95rem 
@@ -116,14 +103,15 @@ textarea {
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    const data = {
+    const _mockData = {
       times: { reading: 15*60, writing: 20*60, listening: 10*60 },
       reading: {
         passageTitle: "Where are the Harry Potter Stars now?",
         passageText: "The actors who played the children in the Harry Potter movies are now adults...",
         questions: [
-          { q: "1. Who thought about leaving the Harry Potter series?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Rupert Grint" },
-          { q: "2. Who felt similar to their character?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Emma Watson" }
+          // Thêm 'id' để dễ quản lý
+          { id: "r1", q: "1. Who thought about leaving the Harry Potter series?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Rupert Grint" },
+          { id: "r2", q: "2. Who felt similar to their character?", options:["Daniel Radcliffe","Rupert Grint","Emma Watson"], correct:"Emma Watson" }
         ]
       },
       writing: {
@@ -131,20 +119,88 @@ textarea {
         guidance: "Write about 250–350 words."
       },
       listening: [
-        { q: "1. Wakeboarding began in ________.", correct: "California" },
-        { q: "2. The wakeboarder is pulled behind a boat that travels at about ________ mph.", correct: "25" },
-        { q: "3. A spin of 1260 degrees means turning around ________ and a half times.", correct: "three" },
-        { q: "4. The Wakestock festival takes place in ________, North Wales.", correct: "Abersoch" },
-        { q: "5. About ________ million people around the world do wakeboarding.", correct: "3" },
-        { q: "6. Roller derby originally began in the ________.", correct: "1930s" },
-        { q: "7. Where did the revival of roller derby start?", options: ["A. Canada","B. Texas","C. England","D. Australia"], correct: "B. Texas" },
-        { q: "8. How many players are there on each roller derby team?", options: ["A. Four","B. Five","C. Six","D. Seven"], correct: "B. Five" },
-        { q: "9. What happens if a player trips another one?", options: ["A. She is penalised.","B. The team loses a point.","C. The game stops.","D. The player is sent off."], correct: "A. She is penalised." },
-        { q: "10. What is Jules’ nickname?", options: ["A. The Julexpress","B. The Julifier","C. The Roller Jules","D. The Fast Juls"], correct: "B. The Julifier" }
+        { id: "l1", q: "1. Wakeboarding began in ________.", correct: "California" },
+        { id: "l2", q: "2. The wakeboarder is pulled behind a boat that travels at about ________ mph.", correct: "25" },
+        { id: "l3", q: "3. A spin of 1260 degrees means turning around ________ and a half times.", correct: "three" },
+        { id: "l4", q: "4. The Wakestock festival takes place in ________, North Wales.", correct: "Abersoch" },
+        { id: "l5", q: "5. About ________ million people around the world do wakeboarding.", correct: "3" },
+        { id: "l6", q: "6. Roller derby originally began in the ________.", correct: "1930s" },
+        { id: "l7", q: "7. Where did the revival of roller derby start?", options: ["A. Canada","B. Texas","C. England","D. Australia"], correct: "B. Texas" },
+        { id: "l8", q: "8. How many players are there on each roller derby team?", options: ["A. Four","B. Five","C. Six","D. Seven"], correct: "B. Five" },
+        { id: "l9", q: "9. What happens if a player trips another one?", options: ["A. She is penalised.","B. The team loses a point.","C. The game stops.","D. The player is sent off."], correct: "A. She is penalised." },
+        { id: "l10", q: "10. What is Jules’ nickname?", options: ["A. The Julexpress","B. The Julifier","C. The Roller Jules","D. The Fast Juls"], correct: "B. The Julifier" }
       ]
     };
 
-    // =============== TIMER ==================
+    // Lớp Repo: Chỉ cung cấp data
+    const mockTestRepo = {
+      // Lấy data cho UI (đã loại bỏ đáp án)
+      getReadingDataForUI: () => {
+        return {
+          passageTitle: _mockData.reading.passageTitle,
+          passageText: _mockData.reading.passageText,
+          questions: _mockData.reading.questions.map(q => ({
+            id: q.id,
+            q: q.q,
+            options: q.options
+          }))
+        };
+      },
+      getListeningDataForUI: () => {
+         return _mockData.listening.map(q => ({
+            id: q.id,
+            q: q.q,
+            options: q.options
+          }));
+      },
+      
+      // Lấy data đáp án (chỉ cho Service)
+      getReadingAnswers: () => _mockData.reading.questions.map(q => ({ id: q.id, correct: q.correct })),
+      getListeningAnswers: () => _mockData.listening.map(q => ({ id: q.id, correct: q.correct })),
+
+      // Lấy data khác
+      getWritingData: () => _mockData.writing,
+      getTimes: () => _mockData.times
+    };
+
+    const mockTestService = {
+      // Logic chấm điểm Reading
+      calculateReadingScore: (userAnswers) => {
+        const correctAnswers = mockTestRepo.getReadingAnswers();
+        
+        let correctCount = 0;
+        correctAnswers.forEach(answer => {
+          // So sánh câu trả lời của user (theo id) với đáp án đúng
+          if (userAnswers[answer.id] === answer.correct) {
+            correctCount++;
+          }
+        });
+        
+        return { correctCount, total: correctAnswers.length };
+      },
+      
+      // Logic chấm điểm Listening
+      calculateListeningScore: (userAnswers) => {
+        const correctAnswers = mockTestRepo.getListeningAnswers();
+
+        let correctCount = 0;
+        correctAnswers.forEach(answer => {
+          const userAnswer = String(userAnswers[answer.id] || "").trim().toLowerCase();
+          const correctAnswer = String(answer.correct).toLowerCase();
+          if (userAnswer === correctAnswer) {
+            correctCount++;
+          }
+        });
+
+        return { correctCount, total: correctAnswers.length };
+      }
+    };
+
+
+    // =================================================================
+    // ===== 3. UI LAYER (React Components) ============================
+    // =================================================================
+    
     const Timer = ({ seconds }) => {
       const m = Math.floor(seconds / 60);
       const s = seconds % 60;
@@ -159,30 +215,29 @@ textarea {
       </div>
     );
 
-    // =============== READING (REFACTORED) ==================
-
-    // ----- 1. PRESENTATIONAL Component (Thụ động, chỉ hiển thị) -----
-    // (Chỉ chứa JSX, nhận mọi thứ qua props)
+    // ----- READING PRESENTER (Giữ nguyên từ bài trước) -----
     function ReadingPresenter({ 
-      p, time, index, answers, locked, 
+      passageTitle, passageText, questions, time, index, userAnswers, locked, 
       onSelect, onSubmit, onPrev, onNext 
     }) {
+      const currentQuestion = questions[index]; // Lấy câu hỏi hiện tại
+      
       return (
         <div className={`card ${locked?"locked-overlay":""}`}>
           <h2>Reading</h2>
           <Timer seconds={time}/>
           <div className="passage">
-            <strong>{p.passageTitle}</strong>
-            <p>{p.passageText}</p>
+            <strong>{passageTitle}</strong>
+            <p>{passageText}</p>
           </div>
           <h3>Question {index+1}</h3>
-          <p>{p.questions[index].q}</p>
+          <p>{currentQuestion.q}</p>
           <div className="choices">
-            {p.questions[index].options.map(opt=>( 
+            {currentQuestion.options.map(opt=>( 
               <button 
                 key={opt} 
-                onClick={() => onSelect(opt)} 
-                className={answers[index] === opt ? "selected" : ""} 
+                onClick={() => onSelect(currentQuestion.id, opt)} // Gửi ID và lựa chọn
+                className={userAnswers[currentQuestion.id] === opt ? "selected" : ""} 
                 disabled={locked}
               >
                 {opt}
@@ -193,88 +248,94 @@ textarea {
             <button className="btn" onClick={onPrev} disabled={index === 0 || locked}>⬅ Prev</button>
             <div style={{display:"flex", gap:10}}>
               <button className="btn" onClick={onSubmit} disabled={locked}>Submit Section</button>
-              <button className="btn" onClick={onNext} disabled={index === p.questions.length - 1 || locked}>Next ➡</button>
+              <button className="btn" onClick={onNext} disabled={index === questions.length - 1 || locked}>Next ➡</button>
             </div>
           </div>
         </div>
       );
     }
 
-    // ----- 2. CONTAINER Component (Thông minh, quản lý logic) -----
-    // (Chứa State, Effect, và các hàm xử lý. Render Presenter)
+    // ----- READING CONTAINER (ĐÃ SỬA) -----
     function ReadingSection({ onDone, initialTime }) {
-      const p = data.reading;
+      // **SỬA 1: Gọi REPO để lấy data, không dùng data global**
+      const { passageTitle, passageText, questions } = mockTestRepo.getReadingDataForUI();
+      
       const [time, setTime] = useState(initialTime);
       const [index, setIndex] = useState(0);
-      const [answers, setAnswers] = useState(Array(p.questions.length).fill(null));
+      // **SỬA 2: Đổi state `answers` từ Array sang Object để lưu theo ID**
+      const [userAnswers, setUserAnswers] = useState({}); // ví dụ: { "r1": "Emma Watson" }
       const [locked, setLocked] = useState(false);
 
-      // --- LOGIC ---
-      
-      // (isForced = true sẽ bỏ qua 'confirm' - dùng khi hết giờ)
       const handleSubmit = (isForced = false) => {
-        if (locked) return; // Ngăn submit nhiều lần
+        if (locked) return;
         
         if (isForced || window.confirm("Bạn có chắc muốn nộp phần Reading này không?")) {
           setLocked(true);
-          const correct = p.questions.reduce((a,q,i) => (answers[i] === q.correct ? a + 1 : a), 0);
+          
+          // **SỬA 3: Gọi SERVICE để chấm điểm, không tự tính**
+          const { correctCount, total } = mockTestService.calculateReadingScore(userAnswers);
+          
+          // Gửi kết quả lên App
           onDone({
             section: "reading",
             locked: true,
-            answers,
-            correctCount: correct,
-            total: p.questions.length
+            answers: userAnswers,
+            correctCount: correctCount,
+            total: total
           });
         }
       };
 
       useEffect(() => {
         if (locked) return;
-        
         const timerId = setInterval(() => {
           setTime(prevTime => {
             if (prevTime <= 1) {
               clearInterval(timerId);
-              handleSubmit(true); // Hết giờ, ép nộp bài
+              handleSubmit(true); 
               return 0;
             }
             return prevTime - 1;
           });
         }, 1000);
-
         return () => clearInterval(timerId);
-      }, [locked]); // Chỉ chạy lại khi 'locked' thay đổi
+      }, [locked]);
 
-      const handleSelect = (opt) => {
+      // **SỬA 4: Cập nhật state `answers` theo ID**
+      const handleSelect = (questionId, option) => {
         if (locked) return;
-        const newAnswers = [...answers];
-        newAnswers[index] = opt;
-        setAnswers(newAnswers);
+        setUserAnswers(prevAnswers => ({
+          ...prevAnswers, // Giữ các câu trả lời cũ
+          [questionId]: option // Cập nhật câu trả lời cho ID này
+        }));
       };
 
       const handlePrev = () => setIndex(i => Math.max(0, i - 1));
-      const handleNext = () => setIndex(i => Math.min(p.questions.length - 1, i + 1));
+      const handleNext = () => setIndex(i => Math.min(questions.length - 1, i + 1));
 
-      // --- RENDER ---
-      // Container render Presenter, và truyền props xuống
+      // Render Presenter (giống bài trước)
       return (
         <ReadingPresenter
-          p={p}
+          passageTitle={passageTitle}
+          passageText={passageText}
+          questions={questions}
           time={time}
           index={index}
-          answers={answers}
+          userAnswers={userAnswers}
           locked={locked}
           onSelect={handleSelect}
-          onSubmit={() => handleSubmit(false)} // Nút submit (không ép)
+          onSubmit={() => handleSubmit(false)}
           onPrev={handlePrev}
           onNext={handleNext}
         />
       );
     }
 
-    // =============== WRITING (Chưa refactor) ==================
+    // =============== WRITING (ĐÃ SỬA) ==================
     function WritingSection({ onDone, initialTime }) {
-      const w = data.writing;
+      // **SỬA: Gọi REPO để lấy data**
+      const w = mockTestRepo.getWritingData();
+      
       const [text, setText] = useState("");
       const [time, setTime] = useState(initialTime);
       const [locked, setLocked] = useState(false);
@@ -285,9 +346,11 @@ textarea {
         return ()=>clearInterval(t);
       }, [locked]);
 
-      const handleSubmit = () => {
-        if (!window.confirm("Bạn có chắc muốn nộp phần Writing này không?")) return;
+      const handleSubmit = (isForced = false) => {
+        if (locked) return; // Ngăn submit nhiều lần
+        if (!isForced && !window.confirm("Bạn có chắc muốn nộp phần Writing này không?")) return;
         setLocked(true);
+        // Phần Writing không cần Service, chỉ cần nộp bài
         onDone({section:"writing",locked:true,text});
       };
 
@@ -300,17 +363,20 @@ textarea {
           <textarea value={text} onChange={e=>setText(e.target.value)} disabled={locked}/>
           <div className="nav">
             <div/>
-            <button className="btn" onClick={handleSubmit} disabled={locked}>Submit Section</button>
+            <button className="btn" onClick={() => handleSubmit(false)} disabled={locked}>Submit Section</button>
           </div>
         </div>
       );
     }
 
-    // =============== LISTENING (Chưa refactor) ==================
+    // =============== LISTENING (ĐÃ SỬA) ==================
     function ListeningSection({ onDone, initialTime }) {
-      const list = data.listening;
+      // **SỬA 1: Gọi REPO để lấy data**
+      const list = mockTestRepo.getListeningDataForUI();
+      
       const [index, setIndex] = useState(0);
-      const [answers, setAnswers] = useState(Array(list.length).fill(""));
+      // **SỬA 2: Đổi state `answers` sang Object**
+      const [userAnswers, setUserAnswers] = useState({}); // ví dụ: { "l1": "California" }
       const [time, setTime] = useState(initialTime);
       const [locked, setLocked] = useState(false);
 
@@ -320,19 +386,27 @@ textarea {
         return()=>clearInterval(t);
       },[locked]);
 
-      const handleSubmit = () => {
-        if (!window.confirm("Bạn có chắc muốn nộp phần Listening này không?")) return;
+      const handleSubmit = (isForced = false) => {
+        if (locked) return;
+        if (!isForced && !window.confirm("Bạn có chắc muốn nộp phần Listening này không?")) return;
         setLocked(true);
-        const correct=list.reduce((a,q,i)=>{
-          if(q.options){ return answers[i]===q.correct?a+1:a; }
-          else { return answers[i].trim().toLowerCase()===q.correct.toLowerCase()?a+1:a; }
-        },0);
-        onDone({section:"listening",locked:true,answers,correctCount:correct,total:list.length});
+        
+        // **SỬA 3: Gọi SERVICE để chấm điểm**
+        const { correctCount, total } = mockTestService.calculateListeningScore(userAnswers);
+        
+        onDone({section:"listening",locked:true,answers: userAnswers, correctCount, total});
       };
 
-      const handleChange=v=>{
-        const arr=[...answers];arr[index]=v;setAnswers(arr);
+      // **SỬA 4: Cập nhật state `answers` theo ID**
+      const handleChange = (questionId, value) => {
+        if (locked) return;
+        setUserAnswers(prevAnswers => ({
+          ...prevAnswers,
+          [questionId]: value
+        }));
       };
+      
+      const currentQuestion = list[index];
 
       return (
         <div className={`card ${locked?"locked-overlay":""}`}>
@@ -343,22 +417,34 @@ textarea {
           </audio>
           <Timer seconds={time}/>
           <h3>Question {index+1}</h3>
-          <p>{list[index].q}</p>
+          <p>{currentQuestion.q}</p>
 
-          {list[index].options ? (
+          {currentQuestion.options ? (
             <div className="choices">
-              {list[index].options.map(opt=>(
-                <button key={opt} onClick={()=>!locked&&handleChange(opt)} className={answers[index]===opt?"selected":""} disabled={locked}>{opt}</button>
+              {currentQuestion.options.map(opt=>(
+                <button 
+                  key={opt} 
+                  onClick={() => !locked && handleChange(currentQuestion.id, opt)} 
+                  className={userAnswers[currentQuestion.id] === opt ? "selected" : ""} 
+                  disabled={locked}
+                >
+                  {opt}
+                </button>
               ))}
             </div>
           ) : (
-            <input value={answers[index]} onChange={e=>handleChange(e.target.value)} disabled={locked} style={{width:"100%",padding:10}}/>
+            <input 
+              value={userAnswers[currentQuestion.id] || ""} 
+              onChange={e => handleChange(currentQuestion.id, e.target.value)} 
+              disabled={locked} 
+              style={{width:"100%",padding:10}}
+            />
           )}
 
           <div className="nav">
             <button className="btn" onClick={()=>setIndex(i=>Math.max(0,i-1))} disabled={index===0||locked}>Prev</button>
             <div style={{display:"flex",gap:10}}>
-              <button className="btn" onClick={handleSubmit} disabled={locked}>Submit Section</button>
+              <button className="btn" onClick={() => handleSubmit(false)} disabled={locked}>Submit Section</button>
               <button className="btn" onClick={()=>setIndex(i=>Math.min(list.length-1,i+1))} disabled={index===list.length-1||locked}>Next</button>
             </div>
           </div>
@@ -366,8 +452,11 @@ textarea {
       );
     }
 
-    // =============== MAIN APP ==================
+    // =============== MAIN APP (ĐÃ SỬA) ==================
     function App() {
+      // **SỬA: Gọi REPO để lấy data**
+      const times = mockTestRepo.getTimes();
+      
       const [phase,setPhase]=useState("start");
       const [results,setResults]=useState({});
 
@@ -380,14 +469,19 @@ textarea {
       };
 
       if(phase==="start")return<StartScreen onStart={handleStart}/>;
-      if(phase==="reading")return<ReadingSection onDone={handleSectionDone} initialTime={data.times.reading}/>;
-      if(phase==="writing")return<WritingSection onDone={handleSectionDone} initialTime={data.times.writing}/>;
-      if(phase==="listening")return<ListeningSection onDone={handleSectionDone} initialTime={data.times.listening}/>;
+      if(phase==="reading")return<ReadingSection onDone={handleSectionDone} initialTime={times.reading}/>;
+      if(phase==="writing")return<WritingSection onDone={handleSectionDone} initialTime={times.writing}/>;
+      if(phase==="listening")return<ListeningSection onDone={handleSectionDone} initialTime={times.listening}/>;
       
       if(phase==="result")return(
         <div className="card center">
           <h2>✅ Test Completed</h2>
           <p>Bạn đã hoàn thành toàn bộ bài thi!</p>
+          
+          {/* **SỬA: Hiển thị điểm số từ kết quả** */}
+          <p><strong>Reading Score: {results.reading.correctCount} / {results.reading.total}</strong></p>
+          <p><strong>Listening Score: {results.listening.correctCount} / {results.listening.total}</strong></p>
+          
           <div style={{ marginTop: "20px", display: "flex", gap: "12px", justifyContent: "center" }}>
             <button className="btn" onClick={()=>setPhase("start")}>🔁 Làm lại bài</button>
             <a href="tu.html" className="btn" style={{ textDecoration: "none", lineHeight: "40px" }}>🏠 Quay lại Trang chủ</a>
